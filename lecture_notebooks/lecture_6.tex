@@ -1,4 +1,56 @@
-\documentclass{lecture}
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{bm}
+\usepackage{calc}
+\usepackage[inline]{enumitem}
+\usepackage[many]{tcolorbox}
+\usepackage[medium]{titlesec}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{blkarray}
+\usepackage{xcolor}
+
+\usetikzlibrary{graphs,backgrounds,quotes,arrows.meta}
+
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\bfseries}
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+\tcbset{
+   boxrule=0.6pt,
+   colback=white,
+   sharp corners,
+   before skip=1pc
+}
+
+\newcommand{\lecnum}{}
+\newcommand{\lecture}[1]{\renewcommand{\lecnum}{#1}}
+
+\newcommand{\lectitle}[1]{
+   \begin{center}
+      \large\bf
+      Lecture Note \##1 \hfill
+      MTH651: Advanced Numerical Analysis\\
+      \rm
+      Fall 2024
+   \end{center}
+}
+\newcommand{\lecsubtitle}[1]{
+   \begin{center}
+      \large\bf#1
+   \end{center}
+}
+\DeclareMathOperator{\nnz}{nnz}
 
 \begin{document}
 
