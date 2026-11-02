@@ -28,6 +28,8 @@ Course theme: **finite element methods (FEM) for elliptic PDEs** (model problem:
 
 ## 1. Warm-up: Finite Differences and Convergence Rates
 
+> 💡 **Takeaway:** Replace derivatives by difference quotients and the PDE becomes a linear system. The order $p$ (error $\sim h^p$) is how we measure a method. Consistency alone is not enough; you also need stability. FEM is the more flexible and systematic alternative to FD.
+
 ### 1.1 Model problem: diffusion
 
 Conservation law on $[a,b]$ plus Fourier's law $F=-c\,q_x$ gives the **heat equation**
@@ -74,6 +76,8 @@ $-u''=f$, $u(0)=u(1)=0$. Take grid $x_i=ih$, $h=1/N$, and solve $-D^2u_i=f(x_i)$
 ---
 
 ## 2. Variational Formulation & Galerkin Method (1D)
+
+> 💡 **Takeaway:** Multiply the PDE by a test function and integrate by parts to get the weak form $a(u,v)=(f,v)$. This is the same as minimizing an energy. Galerkin then solves the weak form on a small subspace of hat functions. The result is the energy-norm *best* approximation of $u$ in that subspace (Galerkin orthogonality), and it gives a sparse SPD system.
 
 ### 2.1 Three equivalent problems
 
@@ -122,6 +126,8 @@ So $u_S$ is the $a$-orthogonal projection of $u$ onto $S$.
 
 ## 3. 1D Error Analysis
 
+> 💡 **Takeaway:** Best approximation plus an interpolation estimate gives $O(h)$ in the energy norm. A duality trick (Aubin–Nitsche) gains an extra power of $h$, giving $O(h^2)$ in $L^2$. In 1D only, the Green's function makes the FE solution exact at the nodes.
+
 ### 3.1 Energy norm
 
 Interpolation estimate (1D, piecewise linear):
@@ -155,6 +161,8 @@ $$\|u-u_S\|_{\max}\le Ch^2\|u''\|_{\max}.$$
 ---
 
 ## 4. 2D/3D Poisson, Sobolev Spaces, Traces
+
+> 💡 **Takeaway:** The weak form carries over to higher dimensions, but it needs the right function space. $H^1$ is the space of functions with finite energy, defined through weak derivatives. Traces make boundary values meaningful, which gives $H^1_0$. Piecewise polynomials lie in $H^1$ exactly when they are continuous, so FE spaces must be $C^0$.
 
 ### 4.1 Variational form in $\Omega\subset\mathbb R^d$
 
@@ -200,6 +208,8 @@ Consequences:
 
 ## 5. Abstract Elliptic Theory
 
+> 💡 **Takeaway:** If $a$ is symmetric, continuous and coercive, the weak problem has a unique, stable solution (Riesz/Lax–Milgram). For Poisson, coercivity comes from the Poincaré inequality. Céa's lemma then says the FE error is within a constant $\gamma/\alpha$ of the best possible error, so the problem reduces to bounding the approximation error.
+
 ### 5.1 Riesz representation theorem
 
 For a Hilbert space $H$ and a bounded linear functional $L$, there is a unique $u\in H$ with
@@ -244,6 +254,8 @@ The FE solution is the best approximation in the energy norm. Up to the constant
 ---
 
 ## 6. Finite Elements: Definition, Assembly, Implementation
+
+> 💡 **Takeaway:** A finite element is a cell, a local polynomial space and DOFs that determine the polynomial uniquely. In practice you compute small element matrices on a reference triangle (via an affine map and quadrature) and add them into the global sparse matrix. Each basis function has local support, which is why the matrix is sparse.
 
 ### 6.1 Formal definition (Ciarlet triple)
 
@@ -314,6 +326,8 @@ $$\int_a^bF\,dx\approx\tfrac12(b-a)\sum_iw_iF(T(x_i)).$$
 
 ## 7. Interpolation Theory and Error Estimates
 
+> 💡 **Takeaway:** This section bounds how well piecewise polynomials can approximate $u$: degree $r$ gives $h^{r+1}$ in $L^2$ and $h^r$ in $H^1$, provided the mesh is shape-regular and $u$ is smooth enough. Combined with Céa's lemma, this gives the optimal $H^1$ error $Ch^p$. Low regularity (e.g. corners) caps the rate.
+
 Reduce to bounding $\|u-\Pi_hu\|$, since Céa gives $\|u-u_h\|_V\le\frac\gamma\alpha\inf_{v_h}\|u-v_h\|_V$.
 
 ### 7.1 Mesh geometry
@@ -370,6 +384,8 @@ $$\boxed{\|u-u_h\|_{H^1}\le Ch^p\|u\|_{H^{p+1}}}$$
 
 ### 8.1 Duality (Aubin–Nitsche) argument
 
+> 💡 **Takeaway:** Test the error against the solution of a dual problem whose right-hand side is the error itself. Elliptic regularity then gives one extra factor of $h$, so the $L^2$ error is one order better than the $H^1$ error ($h^{p+1}$ vs $h^p$).
+
 Let $e=u-u_h$ and solve the auxiliary problem
 $$-\Delta w=e\ \text{in }\Omega,\qquad w=0\ \text{on }\partial\Omega,\qquad\|w\|_{H^2}\le C\|e\|_{L^2}\ (\text{elliptic regularity}).$$
 
@@ -388,6 +404,8 @@ The $L^2$ rate is one order higher than the $H^1$ rate. The argument needs $H^2$
 | $P^p$ | $h^p$ | $h^{p+1}$ |
 
 ### 8.2 Neumann boundary conditions
+
+> 💡 **Takeaway:** Neumann conditions are *natural*: they come out of integration by parts and need no special treatment in the space. Dirichlet conditions are *essential*: they are built into the space. Pure Neumann is only solvable up to a constant, and only if $\int f=0$. Restricting to mean-zero functions fixes this.
 
 Neumann (flux) condition: $\partial_nu=\nabla u\cdot\mathbf n=0$ on $\partial\Omega$ (insulated boundary).
 
@@ -409,6 +427,8 @@ Fix: use the mean-zero space $V=\{v\in H^1:\int_\Omega v=0\}$. The **mean Poinca
 ---
 
 ## 9. Sparse Matrices and Direct Solvers
+
+> 💡 **Takeaway:** FE matrices have only $O(n)$ nonzeros, so store and multiply only those (COO/CSR). Direct factorizations (LU/Cholesky) destroy sparsity through fill-in and cost too much for large $n$, which motivates iterative methods.
 
 ### 9.1 Complexity of dense operations ($n\times n$)
 
@@ -442,6 +462,8 @@ Unusable for $n\sim10^6$–$10^9$. FE matrices are sparse: $\mathrm{nnz}(A)=\mat
 ---
 
 ## 10. Iterative Solvers
+
+> 💡 **Takeaway:** Stationary methods repeatedly correct the solution using an approximate inverse $B\approx A^{-1}$. They converge iff $\rho(I-BA)<1$. Speed is governed by the condition number $\kappa(A)$. For FE stiffness matrices $\kappa\sim h^{-2}$, so these methods slow down on fine meshes. This is why better methods (CG, preconditioning) are needed.
 
 Setting: $A$ SPD (from a symmetric coercive form).
 
@@ -509,6 +531,8 @@ For a quasi-uniform 2D mesh with size $h$:
 ---
 
 ## 11. Homework Highlights (items beyond the lectures)
+
+> 💡 **Takeaway:** The homework puts the theory into practice: build 1D and 2D FEM solvers and check the predicted rates numerically ($h$ energy, $h^2$ in $L^2$). Also see that P1 FEM on a uniform mesh reproduces FD, and that iteration counts follow $\kappa$.
 
 ### HW1 – 1D FEM solver
 - Algorithm: mesh, load vector via two-point Gauss quadrature on each of the two intervals touching $\phi_i$, stiffness assembly, boundary rows set to identity.
